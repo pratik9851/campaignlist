@@ -1,0 +1,11 @@
+.box {
+  padding: 20px 0px;
+}
+
+.inputTagDiv {
+  position: relative;
+}
+.inputTag {
+  box-shadow: 0 8px 10px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 10%),
+    0 -8px 12px 0 rgb(0 0 0 / 5%), 0 -2px 3px -2px rgb(0 0 0 / 1%);
+}
