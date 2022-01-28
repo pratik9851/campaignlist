@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styles from "./campaignlist.module.css";
 import { Box, Container, TextField } from "@mui/material";
 import Campaigntable from "./Capaigntable";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector} from "react-redux";
 import { addTolist } from "../redux/Action";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import campaign from "../data.json"
 
 export default function Campaignlist() {
-  const [data, setData] = useState([]);
+  
   const [page, setPage] = useState(1);
+  const [campignPerTable]=useState(10)
 
   const dispatch = useDispatch();
+  const list = useSelector((state) => state.list);
+  
 
-  async function getResult() {
-    const data = await axios.get("http://localhost:3000/campaigns", {
-      params: {
-        _page: page,
-        limit: 30,
-      },
-    });
-    dispatch(addTolist(data.data));
-    setData(data.data);
-  }
+
+
+  
 
   useEffect(() => {
-    getResult();
-  }, [page]);
+    dispatch(addTolist(campaign));
+   
+  }, []);
 
   const handelchange = (e) => {
     let { value } = e.target;
@@ -36,12 +33,13 @@ export default function Campaignlist() {
       return;
     } else {
       value = value.toUpperCase();
-      let ans = data.filter(
+      let ans = list.filter(
         (e) =>
           e.name.includes(value) ||
           e.type.includes(value) ||
           e.company.includes(value)
       );
+     
       dispatch(addTolist(ans));
     }
   };
@@ -61,6 +59,10 @@ export default function Campaignlist() {
   const handleChange = (event, value) => {
     setPage(value);
   };
+
+  const indexOfLastCampaign=page*campignPerTable
+  const indexOfFirstCampaign=indexOfLastCampaign-campignPerTable
+  const currentCampaign=list.slice(indexOfFirstCampaign,indexOfLastCampaign)
 
   return (
     <div>
@@ -85,13 +87,14 @@ export default function Campaignlist() {
               variant="outlined"
               onChange={debounce(500, handelchange)}
               className={styles.inputTag}
+
             />
           </div>
 
-          <Campaigntable />
+          <Campaigntable list={currentCampaign} />
           <Box style={{ marginTop: "15px" }}>
             <Stack spacing={2}>
-              <Pagination count={10} page={page} onChange={handleChange} />
+              <Pagination count={Math.ceil(list.length/10)} page={page} onChange={handleChange} />
             </Stack>
           </Box>
         </Box>
