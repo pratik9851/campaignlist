@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./campaignlist.module.css";
 import { Box, Container, TextField } from "@mui/material";
 import Campaigntable from "./Capaigntable";
@@ -21,19 +21,16 @@ export default function Campaignlist() {
 
   
 
-  
+  useEffect(() => {
     dispatch(addTolist(campaign));
    
- 
+  }, [dispatch]);
 
   const handelchange = (e) => {
     let { value } = e.target;
-
-    if (value === "") {
-      return;
-    } else {
+ 
       value = value.toUpperCase();
-      let ans = list.filter(
+      let ans = campaign.filter(
         (e) =>
           e.name.includes(value) ||
           e.type.includes(value) ||
@@ -41,7 +38,7 @@ export default function Campaignlist() {
       );
      
       dispatch(addTolist(ans));
-    }
+  
   };
 
   function debounce(delay, callback) {
