@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import styles from "./campaignlist.module.css";
 import { Box, Container, TextField } from "@mui/material";
 import Campaigntable from "./Capaigntable";
@@ -21,10 +21,10 @@ export default function Campaignlist() {
 
   
 
-  useEffect(() => {
+  
     dispatch(addTolist(campaign));
    
-  }, []);
+ 
 
   const handelchange = (e) => {
     let { value } = e.target;
