@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "./Capaigntable.css";
 import Editrow from "./Editrow";
 import style from "./campaigntable.module.css";
+import campaign from "../data.json";
 
 export default function Campaigntable({ list }) {
   const [show, setShow] = useState(false);
@@ -41,11 +42,12 @@ export default function Campaigntable({ list }) {
       company: editFormData.company,
     };
 
-    const newCampaigns = [...list];
+    const newCampaigns = [...campaign];
 
-    const index = list.findIndex((campaign) => campaign.id === editCampaignId);
+    const index = campaign.findIndex((el) => el._id === editCampaignId);
 
     newCampaigns[index] = editedcampaign;
+
     dispatch(addTolist(newCampaigns));
     // setcampaigns(newcampaigns);
     setEditCampaignId(null);
@@ -54,7 +56,7 @@ export default function Campaigntable({ list }) {
   const handleEditClick = (event, campaign) => {
     event.preventDefault();
     setShow(!show);
-    setEditCampaignId(campaign.id);
+    setEditCampaignId(campaign._id);
 
     const formValues = {
       name: campaign.name,
