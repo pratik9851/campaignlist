@@ -3,7 +3,7 @@ import styles from "./campaignlist.module.css";
 import { Box, Container, TextField } from "@mui/material";
 import Campaigntable from "./Capaigntable";
 import { useDispatch, useSelector } from "react-redux";
-import { addTolist } from "../redux/Action";
+import { addTolist, searchkeyword } from "../redux/Action";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import campaign from "../data.json";
@@ -11,7 +11,6 @@ import campaign from "../data.json";
 export default function Campaignlist() {
   const [page, setPage] = useState(1);
   const [campignPerTable] = useState(10);
-  const [prev, setPrev] = useState(0);
 
   const dispatch = useDispatch();
   const list = useSelector((state) => state.list);
@@ -21,29 +20,9 @@ export default function Campaignlist() {
   }, [dispatch]);
 
   const handelchange = (e) => {
-    let { value } = e.target;
+    var { value } = e.target;
 
-    if (value.length > prev) {
-      setPrev(value.length);
-      value = value.toUpperCase();
-      var ans = list.filter(
-        (e) =>
-          e.name.includes(value) ||
-          e.type.includes(value) ||
-          e.company.includes(value)
-      );
-    } else {
-      setPrev(value.length);
-      value = value.toUpperCase();
-      ans = campaign.filter(
-        (e) =>
-          e.name.includes(value) ||
-          e.type.includes(value) ||
-          e.company.includes(value)
-      );
-    }
-
-    dispatch(addTolist(ans));
+    dispatch(searchkeyword(value));
   };
 
   function debounce(delay, callback) {
@@ -60,10 +39,6 @@ export default function Campaignlist() {
   const handleChange = (event, value) => {
     setPage(value);
   };
-
-  const indexOfLastCampaign = page * campignPerTable;
-  const indexOfFirstCampaign = indexOfLastCampaign - campignPerTable;
-  const currentCampaign = list.slice(indexOfFirstCampaign, indexOfLastCampaign);
 
   return (
     <div>
@@ -91,7 +66,7 @@ export default function Campaignlist() {
             />
           </div>
 
-          <Campaigntable list={currentCampaign} />
+          <Campaigntable page={page} campignPerTable={campignPerTable} />
           <Box style={{ marginTop: "15px" }}>
             <Stack spacing={2}>
               <Pagination

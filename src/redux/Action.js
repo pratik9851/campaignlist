@@ -1,4 +1,9 @@
-import { ADD_ONLIST, ALL_DETAILS, REMOVE_ONE } from "./ActionType";
+import {
+  ADD_ONLIST,
+  ALL_DETAILS,
+  REMOVE_ONE,
+  SEARCH_KEYWORD,
+} from "./ActionType";
 
 const addTolist = (data) => {
   return {
@@ -20,5 +25,11 @@ const removeOne = (data) => {
     payload: data,
   };
 };
+const searchkeyword = (data) => {
+  return {
+    type: SEARCH_KEYWORD,
+    payload: data,
+  };
+};
 
-export { addTolist, allDetails, removeOne };
+export { addTolist, allDetails, removeOne, searchkeyword };

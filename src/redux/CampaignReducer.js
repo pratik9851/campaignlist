@@ -1,9 +1,10 @@
-import { ADD_ONLIST, REMOVE_ONE } from "./ActionType";
+import { ADD_ONLIST, REMOVE_ONE, SEARCH_KEYWORD } from "./ActionType";
 import _ from "lodash";
 
 const initialstate = {
   list: [],
   alldetail: [],
+  search: "",
 };
 
 const CampaignReducer = (state = initialstate, action) => {
@@ -13,10 +14,16 @@ const CampaignReducer = (state = initialstate, action) => {
         ...state,
         list: action.payload,
       };
+
     case REMOVE_ONE:
       return {
         ...state,
         list: _.filter(state.list, (el) => el._id !== action.payload),
+      };
+    case SEARCH_KEYWORD:
+      return {
+        ...state,
+        search: action.payload,
       };
     default:
       return {
