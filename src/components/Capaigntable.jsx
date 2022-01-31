@@ -130,6 +130,7 @@ export default function Campaigntable({ page, campignPerTable }) {
     <div style={{ marginTop: "15px" }}>
       <div className="container">
         <>
+        
           <form
             onSubmit={handleEditFormSubmit}
             className={`${show ? style.edit1 : style.edit2}`}
@@ -142,7 +143,7 @@ export default function Campaigntable({ page, campignPerTable }) {
           </form>
           <button onClick={deleteBulk}>Delete selected</button>
           <button>Update selected</button>
-
+             <p>total no of rows:{currentlist.length}</p>
           <table>
             <thead>
               <tr>
