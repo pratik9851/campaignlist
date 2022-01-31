@@ -2,18 +2,14 @@ import React, { useEffect, useState } from "react";
 import styles from "./campaignlist.module.css";
 import { Box, Container, TextField } from "@mui/material";
 import Campaigntable from "./Capaigntable";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addTolist, searchkeyword } from "../redux/Action";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import campaign from "../data.json";
 
 export default function Campaignlist() {
-  const [page, setPage] = useState(1);
   const [campignPerTable] = useState(10);
 
   const dispatch = useDispatch();
-  const list = useSelector((state) => state.list);
 
   useEffect(() => {
     dispatch(addTolist(campaign));
@@ -35,10 +31,6 @@ export default function Campaignlist() {
       }, delay);
     };
   }
-
-  const handleChange = (event, value) => {
-    setPage(value);
-  };
 
   return (
     <div>
@@ -66,16 +58,7 @@ export default function Campaignlist() {
             />
           </div>
 
-          <Campaigntable page={page} campignPerTable={campignPerTable} />
-          <Box style={{ marginTop: "15px" }}>
-            <Stack spacing={2}>
-              <Pagination
-                count={Math.ceil(list.length / 10)}
-                page={page}
-                onChange={handleChange}
-              />
-            </Stack>
-          </Box>
+          <Campaigntable campignPerTable={campignPerTable} />
         </Box>
       </Container>
     </div>

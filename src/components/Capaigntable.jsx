@@ -3,15 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addTolist, removeOne } from "../redux/Action";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import { Box } from "@mui/material";
 import "./Capaigntable.css";
 import Editrow from "./Editrow";
 import style from "./campaigntable.module.css";
-import campaign from "../data.json";
 
-export default function Campaigntable({ page, campignPerTable }) {
+export default function Campaigntable({ campignPerTable }) {
   const [checkedBoxes, setCheckedBoxes] = useState([]);
   const [show, setShow] = useState(false);
   const [currentlist, setCurrentlist] = useState([]);
+  const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const [editFormData, setEditFormData] = useState({
     name: "",
@@ -56,15 +59,16 @@ export default function Campaigntable({ page, campignPerTable }) {
       company: editFormData.company,
     };
 
-    const newCampaigns = [...campaign];
+    const newCampaigns = [...list];
+    //console.log()
 
-    const index = campaign.findIndex((el) => el._id === editCampaignId);
+    const index = list.findIndex((el) => el._id === editCampaignId);
 
     newCampaigns[index] = editedcampaign;
 
     dispatch(addTolist(newCampaigns));
 
-    // setcampaigns(newcampaigns);
+    // console.log(list)
     setEditCampaignId(null);
   };
 
@@ -103,7 +107,6 @@ export default function Campaigntable({ page, campignPerTable }) {
 
       setCheckedBoxes(items);
     }
-    console.log(checkedBoxes);
   };
 
   const deleteBulk = () => {
@@ -111,7 +114,6 @@ export default function Campaigntable({ page, campignPerTable }) {
 
     for (let i = 0; i < checkedBoxes.length; i++) {
       newlist = newlist.filter((el) => el._id !== checkedBoxes[i]);
-      console.log(newlist);
     }
     dispatch(addTolist(newlist));
   };
@@ -125,12 +127,14 @@ export default function Campaigntable({ page, campignPerTable }) {
     indexOfFirstCampaign,
     indexOfLastCampaign
   );
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <div style={{ marginTop: "15px" }}>
       <div className="container">
         <>
-        
           <form
             onSubmit={handleEditFormSubmit}
             className={`${show ? style.edit1 : style.edit2}`}
@@ -143,7 +147,7 @@ export default function Campaigntable({ page, campignPerTable }) {
           </form>
           <button onClick={deleteBulk}>Delete selected</button>
           <button>Update selected</button>
-             <p>total no of rows:{currentlist.length}</p>
+          <p>total no of rows:{currentlist.length}</p>
           <table>
             <thead>
               <tr>
@@ -178,6 +182,15 @@ export default function Campaigntable({ page, campignPerTable }) {
               ))}
             </tbody>
           </table>
+          <Box style={{ marginTop: "15px" }}>
+            <Stack spacing={2}>
+              <Pagination
+                count={Math.ceil(currentlist.length / 10)}
+                page={page}
+                onChange={handleChange}
+              />
+            </Stack>
+          </Box>
         </>
       </div>
     </div>
