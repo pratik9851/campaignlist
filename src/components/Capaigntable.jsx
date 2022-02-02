@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addTolist, removeOne } from "../redux/Action";
+import { addTolist, bulkupdate, removeOne } from "../redux/Action";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -16,20 +16,18 @@ export default function Campaigntable({ campignPerTable }) {
   const [show, setShow] = useState(false);
   const [currentlist, setCurrentlist] = useState([]);
   const [page, setPage] = useState(1);
-  const dispatch = useDispatch();
   const [editFormData, setEditFormData] = useState({
     name: "",
     type: "",
     company: "",
   });
-
-  const [bulkupdate,setBulkupadate]=useState([])
-
+  const [popup, setPopup] = useState(false);
   const [editCampaignId, setEditCampaignId] = useState(null);
 
+  const dispatch = useDispatch();
   const list = useSelector((state) => state.list);
-
   const search = useSelector((state) => state.search);
+  const bulk = useSelector((state) => state.bulkupdate);
 
   useEffect(() => {
     let key = search.toUpperCase();
@@ -98,6 +96,7 @@ export default function Campaigntable({ campignPerTable }) {
   };
 
   const handelcheckboxchange = (e, item) => {
+    console.log(e.target.checked);
     if (e.target.checked) {
       let arr = checkedBoxes;
       arr.push(item._id);
@@ -132,75 +131,73 @@ export default function Campaigntable({ campignPerTable }) {
     setPage(value);
   };
 
-  const handelbulkupdate=()=>{;
-  
-  const updatebulk=[]
-    for(let i=0;i<checkedBoxes.length;i++){
-       list.map((el)=>{
-         if(el._id===checkedBoxes[i]){
-           updatebulk.push(el)
-         }
-       })
-       setBulkupadate(updatebulk)
-       setShow(!show)
-    }}
+  const handelbulkupdate = () => {
+    const updatebulk = [];
+    for (let i = 0; i < checkedBoxes.length; i++) {
+      list.map((el) => {
+        if (el._id === checkedBoxes[i]) {
+          updatebulk.push({ ...el });
+        }
+      });
 
-    const handeleditbulkchange=(event)=>{
-        event.preventDefault()
-        console.log(list)
-        const id=event.target.getAttribute("id")
-        const fieldName1 = event.target.getAttribute("name");
-        const fieldValue1 = event.target.value;
-
-        
-        const newupdated=[...bulkupdate]
-          newupdated.map((el)=>{
-               if(el._id===id){
-                   el[fieldName1]=fieldValue1
-               }
-           })
-           
-         
-           setBulkupadate(newupdated)
-          
-
-           
-       
+      dispatch(bulkupdate(updatebulk));
+      setPopup(!popup);
     }
-const bulkupdatesave=()=>{
-    console.log("hi")
-      const new1 =[...list]
-      console.log(list)
-    bulkupdate.map((el)=>{
-        let index=list.findIndex((e)=>e._id===el._id)
-        new1[index]=el
+  };
 
-    })
+  const handeleditbulkchange = (event) => {
+    event.preventDefault();
 
-   // console.log(list)
+    const id = event.target.getAttribute("id");
+    const fieldName1 = event.target.getAttribute("name");
+    const fieldValue1 = event.target.value;
 
-   // dispatch(addTolist(new1));
-    setCheckedBoxes([])
+    const newupdated = [...bulk];
+    newupdated.map((el) => {
+      if (el._id === id) {
+        el[fieldName1] = fieldValue1;
+      }
+    });
 
+    dispatch(bulkupdate(newupdated));
+  };
+  const bulkupdatesave = () => {
+    const new1 = [...list];
 
-}
+    bulk.map((el) => {
+      let index = list.findIndex((e) => e._id === el._id);
+      new1[index] = el;
+    });
 
+    dispatch(addTolist(new1));
+    setPopup(!popup);
+    setCheckedBoxes([]);
+  };
+  const handelcancel = () => {
+    setPopup(!popup);
+  };
 
   return (
     <div style={{ marginTop: "15px" }}>
       <div className="container">
         <>
-           <div className={`${show ? style.edit1 : style.edit2}`}>
-               {bulkupdate.map((el)=>(
-                   <Bulkupdate el={el} key={el._id} handeleditbulkchange={handeleditbulkchange}/>
-               ))
+          <div className={`${popup ? style.edit1 : style.edit2}`}>
+            <div className="popup">
+              <div className="inner-popup">
+                {bulk.map((el) => (
+                  <Bulkupdate
+                    el={el}
+                    key={el._id}
+                    handeleditbulkchange={handeleditbulkchange}
+                    className="innerdiv"
+                  />
+                ))}
+                <button onClick={bulkupdatesave}>save changes</button>
+                <button onClick={handelcancel}>cancel</button>
+              </div>
+            </div>
+          </div>
 
-               }
-               <button onClick={bulkupdatesave}>save changes</button>
-               <button>cancel</button>
-           </div>
-
-       
           <form
             onSubmit={handleEditFormSubmit}
             className={`${show ? style.edit1 : style.edit2}`}

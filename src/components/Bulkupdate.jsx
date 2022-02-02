@@ -2,6 +2,7 @@ import React from 'react';
 
 export default function Bulkupdate({el,handeleditbulkchange}) {
   return <div>
+     
       <input
         type="text"
         id={`${el._id}`}

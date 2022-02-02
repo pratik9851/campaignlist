@@ -1,6 +1,7 @@
 import {
   ADD_ONLIST,
   ALL_DETAILS,
+  BULK_UPDATE,
   REMOVE_ONE,
   SEARCH_KEYWORD,
 } from "./ActionType";
@@ -32,4 +33,11 @@ const searchkeyword = (data) => {
   };
 };
 
-export { addTolist, allDetails, removeOne, searchkeyword };
+const bulkupdate=(data)=>{
+  return{
+    type:BULK_UPDATE,
+    payload:data,
+  }
+}
+
+export { addTolist, allDetails, removeOne, searchkeyword,bulkupdate };

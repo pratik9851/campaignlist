@@ -1,10 +1,16 @@
-import { ADD_ONLIST, REMOVE_ONE, SEARCH_KEYWORD } from "./ActionType";
+import {
+  ADD_ONLIST,
+  BULK_UPDATE,
+  REMOVE_ONE,
+  SEARCH_KEYWORD,
+} from "./ActionType";
 import _ from "lodash";
 
 const initialstate = {
   list: [],
   alldetail: [],
   search: "",
+  bulkupdate: [],
 };
 
 const CampaignReducer = (state = initialstate, action) => {
@@ -24,6 +30,12 @@ const CampaignReducer = (state = initialstate, action) => {
       return {
         ...state,
         search: action.payload,
+      };
+
+    case BULK_UPDATE:
+      return {
+        ...state,
+        bulkupdate: action.payload,
       };
     default:
       return {
