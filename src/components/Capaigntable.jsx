@@ -9,6 +9,7 @@ import { Box } from "@mui/material";
 import "./Capaigntable.css";
 import Editrow from "./Editrow";
 import style from "./campaigntable.module.css";
+import Bulkupdate from "./Bulkupdate";
 
 export default function Campaigntable({ campignPerTable }) {
   const [checkedBoxes, setCheckedBoxes] = useState([]);
@@ -21,6 +22,8 @@ export default function Campaigntable({ campignPerTable }) {
     type: "",
     company: "",
   });
+
+  const [bulkupdate,setBulkupadate]=useState([])
 
   const [editCampaignId, setEditCampaignId] = useState(null);
 
@@ -60,7 +63,6 @@ export default function Campaigntable({ campignPerTable }) {
     };
 
     const newCampaigns = [...list];
-    //console.log()
 
     const index = list.findIndex((el) => el._id === editCampaignId);
 
@@ -68,7 +70,6 @@ export default function Campaigntable({ campignPerTable }) {
 
     dispatch(addTolist(newCampaigns));
 
-    // console.log(list)
     setEditCampaignId(null);
   };
 
@@ -131,10 +132,75 @@ export default function Campaigntable({ campignPerTable }) {
     setPage(value);
   };
 
+  const handelbulkupdate=()=>{;
+  
+  const updatebulk=[]
+    for(let i=0;i<checkedBoxes.length;i++){
+       list.map((el)=>{
+         if(el._id===checkedBoxes[i]){
+           updatebulk.push(el)
+         }
+       })
+       setBulkupadate(updatebulk)
+       setShow(!show)
+    }}
+
+    const handeleditbulkchange=(event)=>{
+        event.preventDefault()
+        console.log(list)
+        const id=event.target.getAttribute("id")
+        const fieldName1 = event.target.getAttribute("name");
+        const fieldValue1 = event.target.value;
+
+        
+        const newupdated=[...bulkupdate]
+          newupdated.map((el)=>{
+               if(el._id===id){
+                   el[fieldName1]=fieldValue1
+               }
+           })
+           
+         
+           setBulkupadate(newupdated)
+          
+
+           
+       
+    }
+const bulkupdatesave=()=>{
+    console.log("hi")
+      const new1 =[...list]
+      console.log(list)
+    bulkupdate.map((el)=>{
+        let index=list.findIndex((e)=>e._id===el._id)
+        new1[index]=el
+
+    })
+
+   // console.log(list)
+
+   // dispatch(addTolist(new1));
+    setCheckedBoxes([])
+
+
+}
+
+
   return (
     <div style={{ marginTop: "15px" }}>
       <div className="container">
         <>
+           <div className={`${show ? style.edit1 : style.edit2}`}>
+               {bulkupdate.map((el)=>(
+                   <Bulkupdate el={el} key={el._id} handeleditbulkchange={handeleditbulkchange}/>
+               ))
+
+               }
+               <button onClick={bulkupdatesave}>save changes</button>
+               <button>cancel</button>
+           </div>
+
+       
           <form
             onSubmit={handleEditFormSubmit}
             className={`${show ? style.edit1 : style.edit2}`}
@@ -146,7 +212,7 @@ export default function Campaigntable({ campignPerTable }) {
             />
           </form>
           <button onClick={deleteBulk}>Delete selected</button>
-          <button>Update selected</button>
+          <button onClick={handelbulkupdate}>Update selected</button>
           <p>total no of rows:{currentlist.length}</p>
           <table>
             <thead>
